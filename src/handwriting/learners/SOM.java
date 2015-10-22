@@ -3,9 +3,7 @@ package handwriting.learners;
 import handwriting.core.Drawing;
 import handwriting.core.RecognizerAI;
 import handwriting.core.SampleData;
-import handwriting.learners.som.SOMNode;
 import handwriting.learners.som.SOMPoint;
-import handwriting.learners.som.SelfOrgMap;
 import javafx.scene.canvas.Canvas;
 
 import java.util.concurrent.ArrayBlockingQueue;
