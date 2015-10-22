@@ -12,15 +12,15 @@ import javafx.scene.canvas.Canvas;
 public interface RecognizerAI {
 	// The progress queue is used for updating the progress bar.
 	// When the method completes, place a 1.0 in the queue.
-	public void train(SampleData data, ArrayBlockingQueue<Double> progress) throws InterruptedException;
-	
+	public void train(SampleData data, ArrayBlockingQueue<Double> progress) throws Exception;
+
 	// May return "Unknown" if it ihas not been trained.
 	public String classify(Drawing d);
-	
+
 	default public boolean allTestsCorrect(SampleData testData) {
 		return numCorrectTests(testData) == testData.numDrawings();
 	}
-	
+
 	// Returns the number of samples from testData that were correctly classified
 	default public int numCorrectTests(SampleData testData) {
 		int passed = 0;
@@ -33,9 +33,9 @@ public interface RecognizerAI {
 		}
 		return passed;
 	}
-	
+
 	default public void visualize(Canvas surface) {}
-	
+
 	public static double stdDev(ArrayList<Integer> data) {
 		double mean = RecognizerAI.mean(data);
 		double ssd = 0.0;

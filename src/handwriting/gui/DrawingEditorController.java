@@ -18,11 +18,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import search.core.AIReflector;
 import search.core.Duple;
+import search.core.Histogram;
 
 public class DrawingEditorController {
 	@FXML
@@ -76,6 +80,21 @@ public class DrawingEditorController {
 	@FXML
 	TextField testResults;
 	
+	@FXML
+	TableView<Result> resultTable;
+	
+	@FXML
+	TableColumn<TableView<Result>,String> labels;
+	
+	@FXML
+	TableColumn<TableView<Result>,Double> percents;
+	
+	@FXML
+	TableColumn<TableView<Result>,Integer> rights;
+	
+	@FXML
+	TableColumn<TableView<Result>,Integer> wrongs;
+	
 	RecognizerAI trainer;
 	
 	SampleData drawings;
@@ -95,7 +114,15 @@ public class DrawingEditorController {
 		setupButtons();
 		setupCanvas();
 		setupChoiceBoxes();
+		setupTable();
 		trainingProgress.setProgress(1.0);
+	}
+	
+	void setupTable() {
+		labels.setCellValueFactory(new PropertyValueFactory<TableView<Result>,String>("label"));
+		percents.setCellValueFactory(new PropertyValueFactory<TableView<Result>,Double>("percent"));
+		rights.setCellValueFactory(new PropertyValueFactory<TableView<Result>,Integer>("success"));
+		wrongs.setCellValueFactory(new PropertyValueFactory<TableView<Result>,Integer>("failure"));
 	}
 	
 	void setupVars() {
@@ -268,14 +295,26 @@ public class DrawingEditorController {
 	
 	void runTests(SampleData testData) {
 		int numCorrect = 0;
+		Histogram<String> correct = new Histogram<>(), incorrect = new Histogram<>();
 		for (int i = 0; i < testData.numDrawings(); i++) {
 			Duple<String,Drawing> test = testData.getLabelAndDrawing(i);
 			if (trainer.classify(test.getSecond()).equals(test.getFirst())) {
 				numCorrect += 1;
+				correct.bump(test.getFirst());
+			} else {
+				incorrect.bump(test.getFirst());
 			}
 		}
 		double percent = 100.0 * numCorrect / testData.numDrawings();
 		testResults.setText(String.format("%d/%d (%4.2f%%) correct", numCorrect, testData.numDrawings(), percent));		
+		resetTable(testData, correct, incorrect);
+	}
+	
+	void resetTable(SampleData testData, Histogram<String> correct, Histogram<String> incorrect) {
+		resultTable.getItems().clear();
+		for (String label: testData.allLabels()) {
+			resultTable.getItems().add(new Result(label, correct.getCountFor(label), incorrect.getCountFor(label)));
+		}
 	}
 	
 	void oops(Exception exc) {
@@ -331,7 +370,6 @@ public class DrawingEditorController {
 	}
 	
 	void resetDrawingList(String label) {
-		System.out.println("ResetDrawingList: " + label);
 		drawingChoice.getItems().clear();
 		for (int i = 0; i < drawings.numDrawingsFor(label); i++) {
 			drawingChoice.getItems().add(i);

@@ -1,11 +1,16 @@
 package handwriting.learners.som;
 
+import java.util.ArrayList;
+
 public class SOMPoint {
 	private int x, y;
-	
-	public SOMPoint(int x, int y) {
+	private double value;
+    private double weight;
+
+    public SOMPoint(int x, int y) {
 		this.x = x;
 		this.y = y;
+		this.value = 0.0;
 	}
 	
 	public int x() {return x;}
@@ -29,4 +34,12 @@ public class SOMPoint {
 			return false;
 		}
 	}
+
+	public void setWeight(double value) {
+		this.value = value;
+	}
+
+    public double getWeight() {
+        return weight;
+    }
 }

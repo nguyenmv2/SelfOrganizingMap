@@ -15,7 +15,7 @@ public class DrawingEditor extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			BorderPane root = loader.load(getClass().getResource("DrawingEditorGUI.fxml").openStream());
+			BorderPane root = (BorderPane) loader.load(getClass().getResource("DrawingEditorGUI.fxml").openStream());
 			primaryStage.setScene(new Scene(root));
 			primaryStage.show();
 			primaryStage.setOnCloseRequest(event -> System.exit(0));

@@ -11,12 +11,12 @@ public class SampleData {
 	private Map<String,ArrayList<Drawing>> labelToDrawing;
 	private int width, height;
 	private boolean firstDrawingAdded;
-	
+
 	public SampleData() {
 		labelToDrawing = new LinkedHashMap<String,ArrayList<Drawing>>();
 		firstDrawingAdded = false;
 	}
-	
+
 	public int numDrawings() {
 		int num = 0;
 		for (String label: allLabels()) {
@@ -24,18 +24,18 @@ public class SampleData {
 		}
 		return num;
 	}
-	
+
 	public int numLabels() {
 		return labelToDrawing.size();
 	}
-	
+
 	public void addLabel(String label) {
 		labelToDrawing.put(label, new ArrayList<Drawing>());
 	}
-	
+
 	public int getDrawingWidth() {return width;}
 	public int getDrawingHeight() {return height;}
-	
+
 	public void addDrawing(String label, Drawing d) {
 		if (firstDrawingAdded) {
 			if (d.getWidth() != width || d.getHeight() != height) {
@@ -46,25 +46,25 @@ public class SampleData {
 			height = d.getHeight();
 			firstDrawingAdded = true;
 		}
-		
+
 		if (!hasLabel(label)) {
 			addLabel(label);
 		}
-		labelToDrawing.get(label).add(d);
+		labelToDrawing.get(label).add(new Drawing(d));
 	}
-	
+
 	public boolean hasLabel(String label) {
 		return labelToDrawing.containsKey(label);
 	}
-	
+
 	public int numDrawingsFor(String label) {
 		return hasLabel(label) ? labelToDrawing.get(label).size() : 0;
 	}
-	
+
 	public Drawing getDrawing(String label, int index) {
-		return labelToDrawing.get(label).get(index);
+		return new Drawing(labelToDrawing.get(label).get(index));
 	}
-	
+
 	public Duple<String,Drawing> getLabelAndDrawing(int index) {
 		if (index < 0 || index >= numDrawings()) {
 			throw new IndexOutOfBoundsException(index + " > numDrawings(): " + numDrawings());
@@ -78,19 +78,19 @@ public class SampleData {
 		}
 		throw new IllegalStateException("This should never happen");
 	}
-	
+
 	public String getLabelFor(int index) {
 		return getLabelAndDrawing(index).getFirst();
 	}
-	
+
 	public Drawing getDrawing(int index) {
 		return getLabelAndDrawing(index).getSecond();
 	}
-	
+
 	public Set<String> allLabels() {
 		return labelToDrawing.keySet();
 	}
-	
+
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		for (String label: allLabels()) {
@@ -104,7 +104,7 @@ public class SampleData {
 		}
 		return result.toString();
 	}
-	
+
 	public static SampleData parseDataFrom(Scanner s) {
 		SampleData result = new SampleData();
 		while (s.hasNextLine()) {
@@ -115,14 +115,14 @@ public class SampleData {
 				result.addDrawing(label, new Drawing(tokens[i]));
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	public static SampleData parseDataFrom(File f) throws FileNotFoundException {
 		return parseDataFrom(new Scanner(f));
 	}
-	
+
 	public static SampleData parseDataFrom(String s) throws FileNotFoundException {
 		return parseDataFrom(new File(s));
 	}
