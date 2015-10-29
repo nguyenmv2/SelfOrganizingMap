@@ -1,0 +1,4 @@
+- Interior node will only classify
+- Choose a feature to evaluate. What feature should I choose ??
+- Interior node needs:
+    - A feature to evaluate

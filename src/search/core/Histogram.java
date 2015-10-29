@@ -1,6 +1,7 @@
 package search.core;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class Histogram<T> {
 	private HashMap<T,Integer> counts = new HashMap<>();
@@ -11,6 +12,14 @@ public class Histogram<T> {
 	
 	public int getCountFor(T value) {
 		return counts.getOrDefault(value, 0);
+	}
+	
+	public int getTotalCounts() {
+		int total = 0;
+		for (Entry<T,Integer> entry: counts.entrySet()) {
+			total += entry.getValue();
+		}
+		return total;
 	}
 	
 	public T getPluralityWinner() {
