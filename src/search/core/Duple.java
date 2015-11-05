@@ -11,4 +11,12 @@ public class Duple<X,Y> {
 	
 	public X getFirst() {return x;}
 	public Y getSecond() {return y;}
+
+	public String toString(){
+		return new StringBuilder()
+				.append(x)
+				.append("---")
+				.append(y)
+				.toString();
+	}
 }
