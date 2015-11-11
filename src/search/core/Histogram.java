@@ -1,13 +1,27 @@
 package search.core;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map.Entry;
 
-public class Histogram<T> {
+public class Histogram<T> implements Iterable<T> {
 	private HashMap<T,Integer> counts = new HashMap<>();
+
+	public Histogram() {}
+	
+	public Histogram(Histogram<T> other) {
+		this.counts.putAll(other.counts);
+		if (this.counts.size() != other.counts.size()) {
+			throw new IllegalStateException("Huh? " + this.counts.size() + ": " + other.counts.size());
+		}
+	}
 	
 	public void bump(T value) {
-		counts.put(value, getCountFor(value) + 1);
+		bumpBy(value, 1);
+	}
+	
+	public void bumpBy(T value, int numBumps) {
+		counts.put(value, getCountFor(value) + numBumps);
 	}
 	
 	public int getCountFor(T value) {
@@ -20,6 +34,11 @@ public class Histogram<T> {
 			total += entry.getValue();
 		}
 		return total;
+	}
+	
+	@Override
+	public Iterator<T> iterator() {
+		return counts.keySet().iterator();
 	}
 	
 	public T getPluralityWinner() {
